@@ -1,0 +1,2 @@
+# Inventario
+Inventario de productos
