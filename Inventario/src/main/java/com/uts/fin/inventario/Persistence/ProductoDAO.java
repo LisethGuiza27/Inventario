@@ -1,20 +1,25 @@
 package com.uts.fin.inventario.Persistence;
 
 import com.uts.fin.inventario.Model.Producto;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import javax.sql.DataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * DAO: Acceso a datos con JDBC puro.
+ * - Inyecta DataSource (producido por DataSourceProducer)
+ * - Cada método abre y cierra su conexión (try-with-resources)
+ */
 @Dependent
 public class ProductoDAO {
 
     @Inject
-    private DataSource ds;
+    private DataSource ds; // Resuelto vía JNDI -> Producer CDI
 
+    /** Lista todos los productos ordenados por nombre */
     public List<Producto> listar() throws SQLException {
         String sql = "SELECT id,codigo,nombre,categoria,precio,stock,activo FROM productos ORDER BY nombre";
         try (Connection con = ds.getConnection();
@@ -26,9 +31,9 @@ public class ProductoDAO {
         }
     }
 
+    /** Lista paginado (LIMIT/OFFSET) */
     public List<Producto> listarPaginado(int limit, int offset) throws SQLException {
-        String sql = "SELECT id,codigo,nombre,categoria,precio,stock,activo " +
-                     "FROM productos ORDER BY nombre LIMIT ? OFFSET ?";
+        String sql = "SELECT id,codigo,nombre,categoria,precio,stock,activo FROM productos ORDER BY nombre LIMIT ? OFFSET ?";
         try (Connection con = ds.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, Math.max(1, limit));
@@ -41,6 +46,7 @@ public class ProductoDAO {
         }
     }
 
+    /** Busca por id */
     public Optional<Producto> buscarPorId(int id) throws SQLException {
         String sql = "SELECT id,codigo,nombre,categoria,precio,stock,activo FROM productos WHERE id=?";
         try (Connection con = ds.getConnection();
@@ -53,6 +59,7 @@ public class ProductoDAO {
         }
     }
 
+    /** Busca por código */
     public Optional<Producto> buscarPorCodigo(String codigo) throws SQLException {
         String sql = "SELECT id,codigo,nombre,categoria,precio,stock,activo FROM productos WHERE codigo=?";
         try (Connection con = ds.getConnection();
@@ -65,6 +72,7 @@ public class ProductoDAO {
         }
     }
 
+    /** Inserta y devuelve el id generado */
     public void insertar(Producto p) throws SQLException {
         String sql = "INSERT INTO productos (codigo,nombre,categoria,precio,stock,activo) VALUES (?,?,?,?,?,?)";
         try (Connection con = ds.getConnection();
@@ -82,6 +90,7 @@ public class ProductoDAO {
         }
     }
 
+    /** Actualiza por id */
     public void actualizar(Producto p) throws SQLException {
         String sql = "UPDATE productos SET codigo=?, nombre=?, categoria=?, precio=?, stock=?, activo=? WHERE id=?";
         try (Connection con = ds.getConnection();
@@ -97,6 +106,7 @@ public class ProductoDAO {
         }
     }
 
+    /** Elimina por id */
     public void eliminarPorId(int id) throws SQLException {
         String sql = "DELETE FROM productos WHERE id=?";
         try (Connection con = ds.getConnection();
@@ -106,6 +116,7 @@ public class ProductoDAO {
         }
     }
 
+    /** Convierte la fila actual del ResultSet en un Producto */
     private Producto mapRow(ResultSet rs) throws SQLException {
         return new Producto(
             rs.getInt("id"),

@@ -2,6 +2,11 @@ package com.uts.fin.inventario.domain;
 
 import jakarta.enterprise.context.Dependent;
 
+/**
+ * Validador sin estado:
+ * - @Dependent: su ciclo de vida depende del consumidor
+ * - Lanza Exception con mensajes claros si no se cumple la regla
+ */
 @Dependent
 public class ValidadorProducto {
     public void validarCodigo(String codigo) throws Exception {

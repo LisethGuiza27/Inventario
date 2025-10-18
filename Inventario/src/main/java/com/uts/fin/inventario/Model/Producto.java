@@ -3,6 +3,11 @@ package com.uts.fin.inventario.Model;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Entidad de dominio "Producto":
+ * - POJO serializable con getters/setters
+ * - equals/hashCode por "codigo" (clave de negocio)
+ */
 public class Producto implements Serializable {
     private Integer id;
     private String codigo;
@@ -14,6 +19,7 @@ public class Producto implements Serializable {
 
     public Producto() {}
 
+    // Constructor completo (incluye id)
     public Producto(Integer id, String codigo, String nombre, String categoria,
                     Double precio, Integer stock, Boolean activo) {
         this.id = id;
@@ -25,11 +31,13 @@ public class Producto implements Serializable {
         this.activo = activo;
     }
 
+    // Constructor sin id (para crear)
     public Producto(String codigo, String nombre, String categoria,
                     Double precio, Integer stock, Boolean activo) {
         this(null, codigo, nombre, categoria, precio, stock, activo);
     }
 
+    // Getters y setters (requeridos por JSP/EL y JDBC)
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public String getCodigo() { return codigo; }

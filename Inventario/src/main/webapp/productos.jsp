@@ -1,5 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 
+  Vista principal de Productos:
+  - Muestra mensajes (info/error y PRG)
+  - Toolbar de búsqueda (por código) y tamaño de página
+  - Tabla de productos con acciones Editar/Eliminar
+  - Paginación simple
+  - Formulario Crear/Editar (dos columnas, responsivo)
+--%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,7 +18,7 @@
 <body>
 <div class="container">
 
-  <!-- Header -->
+  <!-- Header con navegación -->
   <div class="header">
     <div class="brand">
       <a href="${pageContext.request.contextPath}/" class="brand-badge" title="Inicio"></a>
@@ -23,19 +31,19 @@
     </div>
   </div>
 
-
+  <!-- Mensajes por querystring (PRG) y por request -->
   <c:if test="${param.msg == 'creado'}"><div class="alert success">Producto creado correctamente.</div></c:if>
   <c:if test="${param.msg == 'eliminado'}"><div class="alert success">Producto eliminado correctamente.</div></c:if>
   <c:if test="${param.msg == 'actualizado'}"><div class="alert success">Producto actualizado correctamente.</div></c:if>
   <c:if test="${not empty info}"><div class="alert info">${info}</div></c:if>
   <c:if test="${not empty error}"><div class="alert error"><strong>Error:</strong> ${error}</div></c:if>
 
-
+  <!-- Card de listado -->
   <div class="card">
     <div class="card-header">
       <div class="card-title">Listado de productos</div>
 
-
+      <!-- Toolbar: búsqueda por código + tamaño de página -->
       <form method="get" action="${pageContext.request.contextPath}/productos" class="toolbar">
         <input class="input grow" type="text" name="codigo" placeholder="Buscar por código"
                value="${param.codigo != null ? param.codigo : preferenciasBean.filtros['codigo']}" minlength="3">
@@ -51,6 +59,7 @@
     </div>
 
     <div class="card-content">
+      <!-- Tabla de productos -->
       <div class="table-wrap">
         <table>
           <thead>
@@ -88,7 +97,7 @@
         </table>
       </div>
 
-
+      <!-- Paginación simple -->
       <div class="pagination">
         <c:set var="pageNum" value="${page != null ? page : 1}"/>
         <c:set var="pageSize" value="${size != null ? size : 10}"/>
@@ -101,7 +110,7 @@
     </div>
   </div>
 
-
+  <!-- Formulario Crear/Editar (dos columnas) -->
   <div class="card" id="form-nuevo" style="margin-top:18px;">
     <div class="card-header">
       <div class="card-title">
@@ -114,6 +123,7 @@
 
     <div class="card-content">
       <form method="post" action="${pageContext.request.contextPath}/productos" class="form-grid">
+        <!-- Si hay 'editar' el formulario se vuelve de actualización -->
         <c:if test="${not empty editar}">
           <input type="hidden" name="op" value="update"/>
           <input type="hidden" name="id" value="${editar.id}"/>
@@ -176,6 +186,3 @@
 </div>
 </body>
 </html>
-
-
-

@@ -7,6 +7,11 @@ import java.util.Map;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
+/**
+ * Preferencias del usuario (sesión):
+ * - Guarda filtros como "codigo" y "size" para recordar la vista
+ * - Accesible en JSP como #{preferenciasBean}
+ */
 @Named("preferenciasBean")
 @SessionScoped
 public class PreferenciasBean implements Serializable {
